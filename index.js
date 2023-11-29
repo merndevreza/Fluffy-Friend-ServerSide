@@ -28,18 +28,28 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const usersCollection = client.db("fluffyFriends").collection("users");
     const slidesCollection = client.db("fluffyFriends").collection("slides");
-    const categoriesCollection = client
-      .db("fluffyFriends")
-      .collection("categories");
+    const categoriesCollection = client.db("fluffyFriends").collection("categories");
     const reviewsCollection = client.db("fluffyFriends").collection("reviews");
     const petsCollection = client.db("fluffyFriends").collection("pets");
-    const donationsCollection = client
-      .db("fluffyFriends")
-      .collection("donations");
-    const adoptionsCollection = client
-      .db("fluffyFriends")
-      .collection("adoption-requests");
+    const donationsCollection = client.db("fluffyFriends").collection("donations");
+    const adoptionsCollection = client.db("fluffyFriends").collection("adoption-requests");
+
+    //users
+    app.post("/users", async(req,res)=>{
+      const userInfo=req.body;
+      //check if the user is already exists
+      const userEmail=userInfo.email;
+      const query ={email:userEmail}
+      const isExists=await usersCollection.findOne(query);
+      if (isExists) {
+        return res.send("User already in the Database")
+      }else{
+        const result=await usersCollection.insertOne(userInfo)
+        res.send(result)
+      }
+    })
 
     // slides
     app.get("/slides", async (req, res) => {
