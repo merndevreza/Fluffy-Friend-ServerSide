@@ -59,6 +59,11 @@ async function run() {
     //=====================
     // User Dashboard API
     //=====================
+    app.post("/add-donation-campaign",async(req,res)=>{
+      const request = req.body;
+      const result = await donationsCollection.insertOne(request);
+      res.send(result);
+    })
     app.post("/add-pet",async(req,res)=>{
       const request = req.body;
       const result = await petsCollection.insertOne(request);
