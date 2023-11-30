@@ -59,16 +59,13 @@ async function run() {
     //=====================
     // User Dashboard API
     //=====================
-    app.post("/add-donation-campaign",async(req,res)=>{
-      const request = req.body;
-      const result = await donationsCollection.insertOne(request);
-      res.send(result);
-    })
+    //Add A Pet
     app.post("/add-pet",async(req,res)=>{
       const request = req.body;
       const result = await petsCollection.insertOne(request);
       res.send(result);
     })
+    //Update Pet Info
     app.patch("/update-pet/:id",async(req,res)=>{
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -86,6 +83,32 @@ async function run() {
         },
       };
       const result = await petsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+    //Add a Donation campaign
+    app.post("/add-donation-campaign",async(req,res)=>{
+      const request = req.body;
+      const result = await donationsCollection.insertOne(request);
+      res.send(result);
+    })
+    //Edit a donation campaign
+    app.patch("/edit-donation-campaign/:id",async(req,res)=>{
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateRequest = req.body;
+      const updateDoc = {
+        $set: { 
+          petName:updateRequest.petName,
+          maxDonationAmount: updateRequest.maxDonationAmount,
+          donationLastDate: updateRequest.donationLastDate,
+          image: updateRequest.image,
+          category: updateRequest.category,
+          shortDescription: updateRequest.shortDescription,
+          details: updateRequest.details,
+          uploadTime: updateRequest.uploadTime,
+        },
+      };
+      const result = await donationsCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
     // slides
