@@ -60,19 +60,19 @@ async function run() {
     // User Dashboard API
     //=====================
     //Add A Pet
-    app.post("/add-pet",async(req,res)=>{
+    app.post("/add-pet", async (req, res) => {
       const request = req.body;
       const result = await petsCollection.insertOne(request);
       res.send(result);
-    })
+    });
     //Update Pet Info
-    app.patch("/update-pet/:id",async(req,res)=>{
+    app.patch("/update-pet/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updateRequest = req.body;
       const updateDoc = {
-        $set: { 
-          name:updateRequest.name,
+        $set: {
+          name: updateRequest.name,
           age: updateRequest.age,
           location: updateRequest.location,
           image: updateRequest.image,
@@ -84,21 +84,41 @@ async function run() {
       };
       const result = await petsCollection.updateOne(filter, updateDoc);
       res.send(result);
+    });
+    // Delete my Pet
+    app.delete("/delete-pet/:id",async(req,res)=>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await petsCollection.deleteOne(query);
+      res.send(result)
     })
-    //Add a Donation campaign
-    app.post("/add-donation-campaign",async(req,res)=>{
-      const request = req.body;
-      const result = await donationsCollection.insertOne(request);
-      res.send(result);
-    })
-    //Edit a donation campaign
-    app.patch("/edit-donation-campaign/:id",async(req,res)=>{
+    //Update - adopt status
+    app.patch("/set-adopted/:id",async(req,res)=>{
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updateRequest = req.body;
       const updateDoc = {
-        $set: { 
-          petName:updateRequest.petName,
+        $set: {
+          adopted: updateRequest.adopted,
+        },
+      };
+      const result = await petsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+    //Add a Donation campaign
+    app.post("/add-donation-campaign", async (req, res) => {
+      const request = req.body;
+      const result = await donationsCollection.insertOne(request);
+      res.send(result);
+    });
+    //Edit a donation campaign
+    app.patch("/edit-donation-campaign/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateRequest = req.body;
+      const updateDoc = {
+        $set: {
+          petName: updateRequest.petName,
           maxDonationAmount: updateRequest.maxDonationAmount,
           donationLastDate: updateRequest.donationLastDate,
           image: updateRequest.image,
@@ -110,7 +130,16 @@ async function run() {
       };
       const result = await donationsCollection.updateOne(filter, updateDoc);
       res.send(result);
-    })
+    });
+    // My Added Pets
+    app.get("/my-added-pets/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { addedBy: email };
+      const result = await petsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // slides
     app.get("/slides", async (req, res) => {
       const result = await slidesCollection.find().toArray();
