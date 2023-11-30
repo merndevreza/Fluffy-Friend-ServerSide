@@ -105,7 +105,16 @@ async function run() {
       const result = await petsCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
-    //Add a Donation campaign
+    // My Added Pets
+    app.get("/my-added-pets/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const query = { addedBy: email };
+      const result = await petsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //Add a Donation campaign 
     app.post("/add-donation-campaign", async (req, res) => {
       const request = req.body;
       const result = await donationsCollection.insertOne(request);
@@ -131,15 +140,26 @@ async function run() {
       const result = await donationsCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
-    // My Added Pets
-    app.get("/my-added-pets/:email", async (req, res) => {
-      const email = req.params.email;
-      console.log(email);
-      const query = { addedBy: email };
-      const result = await petsCollection.find(query).toArray();
+    //Edit a donation campaign
+    app.put("/donation-status-toggle/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateRequest = req.body;
+      const updateDoc = {
+        $set: {
+          status: updateRequest.status, 
+        },
+      };
+      const result = await donationsCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
-
+    // My Added donation campaigns
+    app.get("/my-donation-campaigns/:email", async (req, res) => {
+      const email = req.params.email; 
+      const query = { addedBy: email };
+      const result = await donationsCollection.find(query).toArray();
+      res.send(result);
+    });
     // slides
     app.get("/slides", async (req, res) => {
       const result = await slidesCollection.find().toArray();
@@ -193,6 +213,19 @@ async function run() {
       const result = await donationsCollection.findOne(query);
       res.send(result);
     });
+    // donation amount update
+    app.patch("/donate-amount/:id",async(req,res)=>{
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateRequest = req.body;
+      const updateDoc ={
+        $set: {
+          totalDonationAmount:updateRequest.totalDonationAmount
+        }
+      }
+      const result = await donationsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
