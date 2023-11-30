@@ -64,6 +64,25 @@ async function run() {
       const result = await petsCollection.insertOne(request);
       res.send(result);
     })
+    app.patch("/update-pet/:id",async(req,res)=>{
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateRequest = req.body;
+      const updateDoc = {
+        $set: { 
+          name:updateRequest.name,
+          age: updateRequest.age,
+          location: updateRequest.location,
+          image: updateRequest.image,
+          category: updateRequest.category,
+          shortDescription: updateRequest.shortDescription,
+          details: updateRequest.details,
+          uploadTime: updateRequest.uploadTime,
+        },
+      };
+      const result = await petsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
     // slides
     app.get("/slides", async (req, res) => {
       const result = await slidesCollection.find().toArray();
