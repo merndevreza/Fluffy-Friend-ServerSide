@@ -27,30 +27,43 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const usersCollection = client.db("fluffyFriends").collection("users");
     const slidesCollection = client.db("fluffyFriends").collection("slides");
-    const categoriesCollection = client.db("fluffyFriends").collection("categories");
+    const categoriesCollection = client
+      .db("fluffyFriends")
+      .collection("categories");
     const reviewsCollection = client.db("fluffyFriends").collection("reviews");
     const petsCollection = client.db("fluffyFriends").collection("pets");
-    const donationsCollection = client.db("fluffyFriends").collection("donations");
-    const adoptionsCollection = client.db("fluffyFriends").collection("adoption-requests");
+    const donationsCollection = client
+      .db("fluffyFriends")
+      .collection("donations");
+    const adoptionsCollection = client
+      .db("fluffyFriends")
+      .collection("adoption-requests");
 
     //users
-    app.post("/users", async(req,res)=>{
-      const userInfo=req.body;
+    app.post("/users", async (req, res) => {
+      const userInfo = req.body;
       //check if the user is already exists
-      const userEmail=userInfo.email;
-      const query ={email:userEmail}
-      const isExists=await usersCollection.findOne(query);
+      const userEmail = userInfo.email;
+      const query = { email: userEmail };
+      const isExists = await usersCollection.findOne(query);
       if (isExists) {
-        return res.send("User already in the Database")
-      }else{
-        const result=await usersCollection.insertOne(userInfo)
-        res.send(result)
+        return res.send("User already in the Database");
+      } else {
+        const result = await usersCollection.insertOne(userInfo);
+        res.send(result);
       }
+    });
+    //=====================
+    // User Dashboard API
+    //=====================
+    app.post("/add-pet",async(req,res)=>{
+      const request = req.body;
+      const result = await petsCollection.insertOne(request);
+      res.send(result);
     })
-
     // slides
     app.get("/slides", async (req, res) => {
       const result = await slidesCollection.find().toArray();
@@ -84,6 +97,13 @@ async function run() {
       const result = await adoptionsCollection.insertOne(request);
       res.send(result);
     });
+    //pet category
+    app.get(`/pet/category/:id`, async (req, res) => {
+      const category = req.params.id;
+      const query = { category: category };
+      const result = await petsCollection.find(query).toArray();
+      res.send(result);
+    });
 
     //donations
     app.get("/donations", async (req, res) => {
@@ -99,7 +119,7 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
