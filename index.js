@@ -35,6 +35,8 @@ async function run() {
       .collection("categories");
     const reviewsCollection = client.db("fluffyFriends").collection("reviews");
     const petsCollection = client.db("fluffyFriends").collection("pets");
+    const careCampaignsCollection = client.db("fluffyFriends").collection("care-campaign");
+    const rescueTeamsCollection = client.db("fluffyFriends").collection("rescue-team");
     const donationsCollection = client
       .db("fluffyFriends")
       .collection("donations");
@@ -158,6 +160,16 @@ async function run() {
       const email = req.params.email; 
       const query = { addedBy: email };
       const result = await donationsCollection.find(query).toArray();
+      res.send(result);
+    });
+    // pet care
+    app.get("/care-campaign", async (req, res) => { 
+      const result = await careCampaignsCollection.find().toArray();
+      res.send(result);
+    });
+    // pet care
+    app.get("/rescue-team", async (req, res) => { 
+      const result = await rescueTeamsCollection.find().toArray();
       res.send(result);
     });
     // slides

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Slider</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 300px;
+      margin: 50px auto;
+      overflow: hidden;
+    }
+
+    .slider-content {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #slide1:checked ~ .slider-content {
+      transform: translateX(0);
+    }
+
+    #slide2:checked ~ .slider-content {
+      transform: translateX(-100%);
+    }
+
+    #slide3:checked ~ .slider-content {
+      transform: translateX(-200%);
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #999;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    label:hover {
+      background-color: #666;
+    }
+
+    #slide1:checked + label[for="slide1"],
+    #slide2:checked + label[for="slide2"],
+    #slide3:checked + label[for="slide3"] {
+      background-color: #333;
+    }
+
+    .slider-container input[type="radio"]:checked + .slider-content {
+      transition: none;
+    }
+
+    /* Animation */
+    @keyframes sliderAnimation {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      20% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-100%);
+      }
+      45% {
+        transform: translateX(-100%);
+      }
+      50% {
+        transform: translateX(-200%);
+      }
+      70% {
+        transform: translateX(-200%);
+      }
+      75% {
+        transform: translateX(0);
+      }
+      95% {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slider-container">
+    <input type="radio" name="slider" id="slide1" checked>
+    <input type="radio" name="slider" id="slide2">
+    <input type="radio" name="slider" id="slide3">
+    
+    <div class="slider-content">
+      <div class="slide">Sentence 1</div>
+      <div class="slide">Sentence 2</div>
+      <div class="slide">Sentence 3</div>
+    </div>
+    
+    <label for="slide1"></label>
+    <label for="slide2"></label>
+    <label for="slide3"></label>
+  </div>
+
+</body>
+</html>
